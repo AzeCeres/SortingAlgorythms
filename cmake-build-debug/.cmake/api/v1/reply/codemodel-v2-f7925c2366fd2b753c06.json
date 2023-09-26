@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.26"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Oblig2SortingAlgorythm",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Oblig2SortingAlgorythm::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Oblig2SortingAlgorythm-Debug-a2a3d4d62b0a167cac3d.json",
+					"name" : "Oblig2SortingAlgorythm",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Datastructures/Oblig2SortingAlgorythm/cmake-build-debug",
+		"source" : "C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Datastructures/Oblig2SortingAlgorythm"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}
