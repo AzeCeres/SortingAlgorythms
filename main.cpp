@@ -4,7 +4,7 @@
 #include <chrono>
 using namespace std;
 using namespace chrono;
-int const SIZE = 10000;
+int const SIZE = 50000;
 /**
  * Creates a random seed based on the system clock
  * Fills an array based on an arbitrary random range
@@ -111,20 +111,18 @@ bool isSorted(array<int, SIZE> arrayIn){
     return isSorted;
 }
 void BubbleSorter(array<int, SIZE>& arrayIn){
-    int prevVal{INT_MIN};
-    bool switchedValues{true};
-    while(switchedValues){
-        switchedValues = false;
-        for (int i = 0; i < arrayIn.size(); ++i) {
-            if (i == 0) {
-                prevVal = arrayIn.at(i);
-                continue;
+    for (size_t pass = 0; pass < SIZE - 1; ++pass) {
+        // Flag to check if any swaps were made in this pass
+        bool swappedValues = false;
+        for (size_t i = 0; i < SIZE - 1 - pass; ++i) {
+            if (arrayIn[i] > arrayIn[i + 1]) {
+                std::swap(arrayIn[i], arrayIn[i + 1]);
+                swappedValues = true;
             }
-            if (arrayIn.at(i) < prevVal){
-                switchedValues = true;
-                swap(arrayIn.at(i-1), arrayIn.at(i));
-            }
-            prevVal = arrayIn.at(i);
+        }
+        // If no swaps were made in this pass, the array is already sorted
+        if (!swappedValues) {
+            break;
         }
     }
 }
