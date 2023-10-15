@@ -4,7 +4,7 @@
 #include <chrono>
 using namespace std;
 using namespace chrono;
-int const SIZE = 50000;
+int const SIZE = 10000;
 /**
  * Creates a random seed based on the system clock
  * Fills an array based on an arbitrary random range
@@ -36,6 +36,43 @@ auto TimeTaken(time_point<system_clock, duration<long long, ratio<1, 1000000000>
 
     duration<double, milli> ms_double = timeNow - timeIn;
     return ms_double;
+}
+
+template<size_t SIZE>
+int MinIndex(array<int, SIZE> arrayIn, size_t i, size_t j){
+    if (i == j)
+        return i;
+    if (i > j) {
+        // Return a value that indicates an error or an invalid index
+        return -1;
+    }
+    // Find the smallest element index in rest of the array
+    int k = MinIndex(arrayIn, i + 1, j);
+    // Return the smallest element of current and rest
+    if (k == -1 || arrayIn[i] < arrayIn[k]) {
+        return i;
+    } else {
+        return k;
+    }
+}
+
+/**
+ * Recursive Selection Sort
+ * @param arrayIn
+ * @param index
+ */
+template<size_t SIZE>
+void recursiveSelectionSort(array<int, SIZE>& arrayIn, size_t index = 0){
+    // Return when index is equal to size of array (Has reached the end)
+    if (index >= SIZE)
+        return;
+    // Find minimum index
+    int k = MinIndex(arrayIn, index, SIZE-1);
+    // Swapping when current index and the minimum index aren't the same
+    if (k != -1 && k != index)
+        swap(arrayIn.at(k), arrayIn.at(index));
+    // Recursively calling itself
+    recursiveSelectionSort(arrayIn, index + 1);
 }
 /**
  * Goes through the array to check if the array is sorted.
@@ -73,23 +110,43 @@ bool isSorted(array<int, SIZE> arrayIn){
     }
     return isSorted;
 }
-void Sorter(array<int, SIZE>& arrayIn){
+void BubbleSorter(array<int, SIZE>& arrayIn){
     int prevVal{INT_MIN};
-    while(!isSorted(arrayIn)){
+    bool switchedValues{true};
+    while(switchedValues){
+        switchedValues = false;
         for (int i = 0; i < arrayIn.size(); ++i) {
             if (i == 0) {
                 prevVal = arrayIn.at(i);
                 continue;
             }
             if (arrayIn.at(i) < prevVal){
-                arrayIn.at(i-1) = arrayIn.at(i);
-                arrayIn.at(i) = prevVal;
+                switchedValues = true;
+                swap(arrayIn.at(i-1), arrayIn.at(i));
             }
             prevVal = arrayIn.at(i);
         }
     }
 }
-void
+template<size_t SIZE>
+/**
+ * Recursive Bubble Sort
+ * @param arrayIn
+ * @param size
+ */
+void recursiveBubbleSort(std::array<int, SIZE>& arrayIn, size_t size = SIZE) {
+    // Base case: If the size of the remaining portion is 1, the array is sorted.
+    if (size == 1) {
+        return;
+    }
+    for (size_t i = 0; i < size - 1; ++i) {
+        if (arrayIn[i] > arrayIn[i + 1]) {
+            std::swap(arrayIn[i], arrayIn[i + 1]);
+        }
+    }
+    // Recursive call on the smaller array (excluding the last element, which is the largest).
+    recursiveBubbleSort(arrayIn, size - 1);
+}
 /**
  * Lets the user provide input. And sends it forward.
  * Does error checking, such as disregarding non answers
@@ -101,34 +158,32 @@ void
  * @param option3
  * @return
  */
-char Options(string questionText, int nrOfOptions, char option1, char option2, char option3){
-    char answer{'x'};
-    while  (answer != option1 && answer != char(toupper(option1)) &&
-            answer != option2 && answer != char(toupper(option2)) &&
-            answer != option3 && answer != char(toupper(option3))) {
+//make it take in a string, and then a vector of chars, and then check if the input is in the vector.
+char Options(string questionText, vector<char>& options){
+    char answer{' '};
+    while (true) {
+        std::cout << questionText << " (";
+        for (size_t i = 0; i < options.size(); ++i) {
+            std::cout << options[i];
+            if (i < options.size() - 1) {
+                std::cout << "/";
+            }
+        }
+        std::cout << ") ? \n";
 
-        cout << questionText << " " << option1 << "/" << option2;
-        if(nrOfOptions == 3)
-            cout << "/" << option3;
-        cout << " ? \n";
-        cin >> answer;
-        if (answer == option1 || answer == char(toupper(option1))) {
+        std::cin >> answer;
 
-        } else if (answer == option2 || answer == char(toupper(option2))) {
-
-        } else if (answer == option3 && nrOfOptions>2 || answer == char(toupper(option3)) && nrOfOptions>2) {
-
-        } else {
-            cout << "Please enter a valid option.\n";
+        for (char option: options) {
+            if (std::tolower(answer) == std::tolower(option)) {
+                return std::tolower(answer);
+            }
         }
     }
-    if (char(tolower(answer)) == option1 || char(tolower(answer)) == option2){
-        answer = char(tolower(answer));
-    }
-    return answer;
 }
 /**
- *
+ * Gnome Sorter, goes down the line comparing the current value with the previous value.
+ * If the previous value is higher, it swaps the two values and goes back one step.
+ * If the previous value is lower, it goes forward one step.
  * @param arrayIn
  */
 void GnomeSorter(array<int, SIZE>& arrayIn){
@@ -152,20 +207,26 @@ int main() {
     bool runSortingAlgorithm{true};
     while (runSortingAlgorithm){
         string questionText = "Do you want to sort an array of size: " + to_string(SIZE);
-        if(Options(questionText, 2, 'y', 'n', ' ') == 'n') {
+        vector<char> ansOptions{'y', 'n'};
+        if(Options(questionText, ansOptions) == 'n') {
             runSortingAlgorithm = false;
             break;
         }
         array<int, SIZE> intArray = initializeRandomList();
         //PrintList(intArray);
-        questionText = "Do you want to sort with 1: Bubble Sort, or 2: Gnome Sort";
+        questionText = "Do you want to sort with 1: Bubble Sort, 2: Gnome Sort, 3: Recursive Selection Sort?, or 4: Recursive Bubble Sort";
         char SorterToUse = 0;
-        SorterToUse = Options(questionText, 3, '1', '2', '3');
+        ansOptions = {'1', '2', '3', '4'};
+        SorterToUse = Options(questionText, ansOptions);
         auto startTime = high_resolution_clock::now();
         if(SorterToUse == '1'){
-            Sorter(intArray);
+            BubbleSorter(intArray);
         } else if (SorterToUse == '2'){
             GnomeSorter(intArray);
+        } else if (SorterToUse == '3'){
+            recursiveSelectionSort(intArray);
+        } else if (SorterToUse == '4'){
+            recursiveBubbleSort(intArray);
         }
         cout << "List is Sorted: " << isSorted(intArray) << endl;
         cout << "Time Taken: "<< TimeTaken(startTime).count() << " ms\n" << "Size of Array: " << SIZE << endl;

@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Datastructures/Oblig2SortingAlgorythm/cmake-build-debug",
-		"source" : "C:/Users/julia/OneDrive/Dokumenter/HINN Arbeid/Datastructures/Oblig2SortingAlgorythm"
+		"build" : "C:/Users/julia/Documents/Unreal Projects/SortingAlgorythms/cmake-build-debug",
+		"source" : "C:/Users/julia/Documents/Unreal Projects/SortingAlgorythms"
 	},
 	"version" : 
 	{
